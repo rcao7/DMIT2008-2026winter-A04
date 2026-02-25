@@ -1,4 +1,14 @@
+// nextjs components
 import Head from "next/head";
+
+// bootstrap components
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+
+import Button from 'react-bootstrap/Button';
+
+// our components
 
 export default function Home() {
   return (
@@ -10,7 +20,17 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
         <main>
-
+          <Container>
+            <h1>Here's our simple bootstrap example!</h1>
+            <Row>
+              <Col>
+                <h4>Available Component Libraries</h4>
+              </Col>
+              <Col>
+                <button>Example button</button>
+              </Col>
+            </Row>
+          </Container>
         </main>
     </>
   );
