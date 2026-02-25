@@ -1,4 +1,16 @@
+// nextjs components
 import Head from "next/head";
+
+// bootstrap components
+import Container from 'react-bootstrap/Container'
+import Row from 'react-bootstrap/Row'
+import Col from 'react-bootstrap/Col'
+
+import Button from 'react-bootstrap/Button'
+
+
+// our components
+import ComponentLibraries from "./components/ComponentLibraries"
 
 export default function Home() {
   return (
@@ -9,9 +21,20 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-        <main>
-
-        </main>
+<main>
+  <Container>
+    <h1>Here's our simple bootstrap example!</h1>
+    <Row>
+      <Col>
+        <h4>Available Component Libraries:</h4>
+        <ComponentLibraries />
+      </Col>
+      <Col>
+        <Button>example button</Button>
+      </Col>
+    </Row>
+  </Container>
+</main>
     </>
   );
 }
