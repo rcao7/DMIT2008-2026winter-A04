@@ -1,9 +1,15 @@
+// react hooks
+import { useState } from 'react';
+
+// data
 import { MOVIE_LIST } from '../utils/movies'
 
+// nextjs
 import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
 
+// MUI components
 import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
@@ -16,6 +22,71 @@ import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 
 export default function Home() {
+
+  const [search, setSearch] = useState("")
+  const [year, setYear] = useState("")
+
+  const [movies, setMovies] = useState(MOVIE_LIST)
+
+  // we'll set up a basic example of implementing an error message
+  const [errorMsg, setErrorMsg] = useState("")
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    validateSearch();
+    filterMovies();
+    console.log(search);
+    console.log(year);
+  }
+
+  const validateSearch = () => {
+    // I want to mostly check that the year is a 4-digit number (we're working with movies).
+
+    if (year.trim().length === 0) {
+      // this means no year was input, so there cannot be any issues with that input
+      setErrorMsg("")
+      return
+    }
+
+    if (!isValidYear(year)) {
+      setErrorMsg(`${year} is not a valid year.`)
+    }
+  }
+
+  const isValidYear = (year) => {
+    return !isNaN(year) && year.trim().length === 4
+  }
+
+  const filterMovies = () => {
+
+    // copy the movie list so we don't mutate complete original data
+    let filteredMovies = [...MOVIE_LIST]
+
+    // first, deal with search text input
+    if (search.trim()) {
+      // filter the array for titles which include the search as a substring
+      filteredMovies = filteredMovies.filter(
+        (movie) => {
+          return movie.name.toLowerCase().includes(
+            search.trim().toLowerCase()
+          )
+        }
+      )
+    }
+
+    // then, deal with year
+    if (year.trim()) {
+      filteredMovies = filteredMovies.filter(
+        (movie) => {
+          return movie.year === parseInt(year.trim())
+        }
+      )
+    }
+
+  setMovies(filteredMovies)
+
+  }
+
   return (
     <div>
       <Head>
@@ -33,15 +104,22 @@ export default function Home() {
           <Typography variant="h2" component="h2" style={{textAlign: "center"}}>
             Movies
           </Typography>
-          <form style={{width: '100%'}}>
+          <form
+            style={{width: '100%'}}
+            onSubmit={handleSubmit}
+          >
             <Grid container spacing={2}>
+              {/* This is the old MUI Grid format, because we're pinning package versions in this starter.
+                  In the new format, you would simply e.g. 'size={6}'' rather than 'item xs={6}'.
+               */}
               <Grid item xs={6}>
                 <TextField
                   id="search-field"
                   label="search..."
                   variant="standard"
                   sx={{width: '100%'}}
-                  
+                  onChange={(e) => {setSearch(event.target.value)}}
+                  value={search}
                 />
               </Grid>
               <Grid item xs={4}>
@@ -50,7 +128,8 @@ export default function Home() {
                   label="year"
                   variant="standard"
                   sx={{width: '100%'}}
-                 
+                  onChange={(e) => {setYear(event.target.value)}}
+                  value={year}
                 />
               </Grid>
               <Grid item xs={2}>
@@ -60,12 +139,27 @@ export default function Home() {
                 >Filter</Button>
               </Grid>
               <Grid item xs={10}>
-                {/* Add the error message here*/}
+                { errorMsg &&
+                  <Alert severity="error">{errorMsg}</Alert>
+                }
               </Grid>
             </Grid>
           </form>
           <List sx={{width: `100%`}}>
-          { MOVIE_LIST.map((movieData, index)=> {
+
+          <ListItem>
+            <ListItemText>
+             <Typography variant="p" component="div">
+              { movies.length === 0 ?
+                "No matches found."
+                :
+                `Results found: ${movies.length}`
+              }
+             </Typography>
+            </ListItemText>
+          </ListItem>
+
+          { movies.map((movieData, index)=> {
               return <ListItem key={index}>
                 <ListItemText>
                   <Typography variant="p" component="div">
